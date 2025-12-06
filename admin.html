@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dine Khin Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { theme: { extend: { colors: { brand: { DEFAULT: '#ff7200', dark: '#e06500' } }, fontFamily: { sans: ['Poppins', 'sans-serif'], burmese: ['Padauk', 'sans-serif'] } } } }
+    </script>
+    <style>
+        .loader{border:2px solid #f3f3f3;border-top:2px solid #ff7200;border-radius:50%;width:14px;height:14px;animation:spin 1s linear infinite;display:inline-block}
+        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen pb-20">
+
+    <!-- LOGIN OVERLAY -->
+    <div id="login-overlay" class="fixed inset-0 z-50 bg-gray-900 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold mb-2">Admin Access</h2>
+            <p class="text-gray-500 mb-6 text-sm">Enter password to manage menu</p>
+            <input type="password" id="password-input" class="w-full border p-3 rounded-lg mb-4 text-center" placeholder="Password">
+            <button onclick="checkPassword()" class="w-full bg-brand text-white font-bold py-3 rounded-lg">Unlock</button>
+            <p id="login-error" class="text-red-500 text-xs mt-3 hidden">Incorrect Password</p>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="admin-content" class="hidden">
+        <header class="bg-white shadow-sm border-b sticky top-0 z-30">
+            <div class="container mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                <h1 class="text-xl font-bold text-gray-800 flex items-center gap-2"><span class="text-2xl">⚙️</span> Menu Admin</h1>
+                <div class="flex gap-3">
+                    <button onclick="document.getElementById('fileInput').click()" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">📂 Load JSON</button>
+                    <input type="file" id="fileInput" accept=".json" class="hidden" onchange="loadJsonFile(this)">
+                    <button onclick="downloadJson()" class="px-4 py-2 bg-brand hover:bg-brand-dark text-white rounded-lg text-sm font-bold shadow-md">⬇️ Download</button>
+                    <button onclick="logout()" class="text-xs text-gray-400 underline">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="container mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- LEFT COLUMN: EDITOR -->
+            <div class="lg:col-span-6 space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-24">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-bold text-gray-800">Edit Item</h2>
+                        <span id="form-mode" class="text-xs font-bold px-2 py-1 bg-green-100 text-green-700 rounded uppercase">New Item</span>
+                    </div>
+                    <input type="hidden" id="edit-id">
+
+                    <div class="space-y-4">
+                        <!-- Name & Price -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="col-span-2">
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">English Name</label>
+                                <input type="text" id="name" class="w-full border rounded-lg p-2 font-bold focus:ring-brand focus:outline-none" placeholder="e.g. Mohinga">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">🇲🇲 Burmese Name (Manual)</label>
+                                <input type="text" id="name_mm" class="w-full border rounded-lg p-2 font-bold font-burmese bg-yellow-50 focus:ring-brand focus:outline-none" placeholder="မုန့်ဟင်းခါး">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Price</label>
+                                <input type="number" id="price" class="w-full border rounded-lg p-2" placeholder="120">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Category</label>
+                                <select id="category" class="w-full border rounded-lg p-2 bg-white"></select>
+                                <input type="text" id="new-category-input" class="hidden w-full border border-brand rounded-lg p-2 text-sm mt-1" placeholder="New cat...">
+                                <button onclick="toggleNewCategory()" id="btn-add-cat" class="text-[10px] text-brand mt-1 font-bold">+ Add Category</button>
+                            </div>
+                        </div>
+
+                        <!-- Descriptions -->
+                        <div><label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Desc (EN)</label><textarea id="description" rows="2" class="w-full border rounded-lg p-2 text-xs"></textarea></div>
+                        <div><label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Desc (MM)</label><textarea id="desc_mm" rows="2" class="w-full border rounded-lg p-2 text-xs font-burmese bg-yellow-50"></textarea></div>
+
+                        <!-- Options Basic -->
+                        <div class="bg-orange-50 p-3 rounded-xl border border-orange-100">
+                            <label class="block text-[10px] font-bold text-gray-600 uppercase mb-2">Options (Eng + MM)</label>
+                            <div class="flex gap-2 mb-2">
+                                <input type="text" id="opt-name" class="flex-1 border rounded-lg p-2 text-xs" placeholder="Eng (e.g. Pork)">
+                                <input type="text" id="opt-name-mm" class="flex-1 border rounded-lg p-2 text-xs font-burmese bg-yellow-50" placeholder="MM (e.g. ဝက်)">
+                                <input type="number" id="opt-price" class="w-16 border rounded-lg p-2 text-xs" placeholder="+฿" value="0">
+                                <button onclick="addOption()" class="bg-brand text-white px-3 rounded-lg font-bold shadow hover:bg-brand-dark">+</button>
+                            </div>
+                            <div id="option-list" class="space-y-2 max-h-32 overflow-y-auto custom-scroll pr-1"></div>
+                        </div>
+
+                        <button onclick="autoTranslate()" id="btn-translate" class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold shadow-md transition-all flex justify-center items-center gap-2 text-sm"><span>✨ Auto Translate All</span></button>
+
+                        <!-- DYNAMIC TRANSLATION CONTAINER -->
+                        <div class="border rounded-xl p-3 bg-gray-50">
+                            <button onclick="document.getElementById('trans-panel').classList.toggle('hidden')" class="flex justify-between w-full text-xs font-bold text-gray-600 uppercase hover:text-brand">
+                                <span>🌐 Translations (Details)</span><span>▼</span>
+                            </button>
+                            
+                            <!-- Dynamic Fields Container -->
+                            <div id="trans-panel" class="hidden mt-3 space-y-4 pt-2 border-t border-gray-200 h-96 overflow-y-auto custom-scroll pr-2">
+                                <!-- JS will inject languages here -->
+                            </div>
+                        </div>
+
+                        <!-- Image -->
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Image URL</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="image" onchange="previewImageInput(this.value)" class="w-full border rounded-lg p-2 text-xs" placeholder="https://...">
+                                <img id="img-preview-mini" src="" class="w-9 h-9 rounded bg-gray-100 object-cover hidden">
+                            </div>
+                        </div>
+
+                        <div class="pt-2 flex gap-2">
+                            <button onclick="saveItem()" class="flex-1 bg-gray-900 hover:bg-black text-white font-bold py-3 rounded-xl shadow-lg text-sm">Save Item</button>
+                            <button onclick="clearForm()" class="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl font-medium text-sm">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: PREVIEW -->
+            <div class="lg:col-span-6 space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px]">
+                    <div class="p-4 border-b bg-white z-10">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-gray-700">Preview</h3>
+                            <span class="text-xs font-bold bg-brand text-white px-2 py-0.5 rounded-full" id="item-count">0 Items</span>
+                        </div>
+                        <div id="filter-container" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div id="preview-list" class="flex-1 overflow-y-auto divide-y divide-gray-50 custom-scroll"></div>
+                </div>
+                <div class="bg-gray-800 rounded-2xl p-4 shadow-lg">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-xs font-bold text-gray-400 uppercase">JSON Output</h3>
+                        <button onclick="copyJson()" class="text-[10px] bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded">Copy Code</button>
+                    </div>
+                    <textarea id="json-output" class="w-full h-48 bg-gray-900 text-green-400 font-mono text-[10px] p-3 rounded-lg border border-gray-700 focus:outline-none resize-none" readonly></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const AUTH_HASH = "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
+
+        let items = [], categories = new Set(["Burmese Curry", "BBQ", "Salads", "Drinks"]), currentFilter = 'All', currentOptions = [];
+        let tempTransState = {}; // Store text while regenerating DOM
+
+        const languages = [
+            { code: 'th', flag: '🇹🇭', name: 'Thai' },
+            { code: 'ru', flag: '🇷🇺', name: 'Russian' },
+            { code: 'cn', flag: '🇨🇳', name: 'Chinese' },
+            { code: 'fr', flag: '🇫🇷', name: 'French' },
+            { code: 'hi', flag: '🇮🇳', name: 'Hindi' },
+            { code: 'ar', flag: '🇸🇦', name: 'Arabic' },
+            { code: 'ko', flag: '🇰🇷', name: 'Korean' },
+            { code: 'ja', flag: '🇯🇵', name: 'Japan' },
+            { code: 'de', flag: '🇩🇪', name: 'German' }
+        ];
+
+        // --- AUTH ---
+        async function sha256(str) { const buf=new TextEncoder().encode(str); const hash=await crypto.subtle.digest('SHA-256',buf); return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+        async function checkPassword() { if(await sha256(document.getElementById('password-input').value)===AUTH_HASH){ localStorage.setItem('admin_session', JSON.stringify({loggedIn:true,ts:Date.now()})); unlockAdmin(); } else { document.getElementById('login-error').classList.remove('hidden'); } }
+        function unlockAdmin() { document.getElementById('login-overlay').classList.add('hidden'); document.getElementById('admin-content').classList.remove('hidden'); init(); }
+        function checkSession() { const s=localStorage.getItem('admin_session'); if(s && (Date.now()-JSON.parse(s).ts<86400000)) unlockAdmin(); }
+        function logout() { localStorage.removeItem('admin_session'); location.reload(); }
+
+        // --- CORE ---
+        function init() { reindexIds(); renderFilters(); updatePreview(); updateCategorySelect(); generateTranslationFields(); }
+        function reindexIds() { items.forEach((item, index) => item.id = index + 1); }
+
+        // --- DYNAMIC TRANSLATION GENERATOR ---
+        function saveTempState() {
+            languages.forEach(l => {
+                const n = document.getElementById(`name_${l.code}`);
+                const d = document.getElementById(`desc_${l.code}`);
+                if(n) tempTransState[`name_${l.code}`] = n.value;
+                if(d) tempTransState[`desc_${l.code}`] = d.value;
+            });
+        }
+
+        function restoreTempState() {
+            languages.forEach(l => {
+                const n = document.getElementById(`name_${l.code}`);
+                const d = document.getElementById(`desc_${l.code}`);
+                if(n && tempTransState[`name_${l.code}`] !== undefined) n.value = tempTransState[`name_${l.code}`];
+                if(d && tempTransState[`desc_${l.code}`] !== undefined) d.value = tempTransState[`desc_${l.code}`];
+            });
+        }
+
+        function generateTranslationFields() {
+            const container = document.getElementById('trans-panel');
+            saveTempState(); 
+
+            container.innerHTML = languages.map(lang => `
+                <div class="bg-gray-100 rounded-lg p-3 border border-gray-200">
+                    <h4 class="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1">${lang.flag} ${lang.name}</h4>
+                    
+                    <!-- Main Fields -->
+                    <div class="grid grid-cols-1 gap-2 mb-3">
+                        <input type="text" id="name_${lang.code}" class="w-full border rounded p-1.5 text-xs bg-white" placeholder="Name (${lang.code})">
+                        <textarea id="desc_${lang.code}" rows="1" class="w-full border rounded p-1.5 text-xs bg-white" placeholder="Desc (${lang.code})"></textarea>
+                    </div>
+
+                    <!-- Option Fields -->
+                    <div id="opts-container-${lang.code}">
+                        ${currentOptions.length > 0 ? `<div class="text-[9px] font-bold text-gray-400 mb-1 uppercase tracking-wide border-b border-gray-200 pb-1">Option Translations</div>` : ''}
+                        ${currentOptions.map((opt, idx) => `
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] text-gray-500 w-1/3 truncate" title="${opt.name}">${opt.name}</span>
+                                <input type="text" 
+                                    value="${opt['name_' + lang.code] || ''}" 
+                                    onchange="updateOptionTranslation(${idx}, '${lang.code}', this.value)"
+                                    class="w-2/3 border rounded p-1 text-xs bg-white focus:ring-1 focus:ring-brand focus:outline-none" 
+                                    placeholder="${lang.name} for '${opt.name}'">
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            restoreTempState(); 
+        }
+
+        function updateOptionTranslation(optIdx, langCode, val) {
+            if (currentOptions[optIdx]) currentOptions[optIdx][`name_${langCode}`] = val;
+        }
+
+        // --- OPTIONS ---
+        function addOption() {
+            const name = document.getElementById('opt-name').value.trim();
+            const name_mm = document.getElementById('opt-name-mm').value.trim();
+            const price = parseFloat(document.getElementById('opt-price').value);
+            if (!name) return;
+            
+            let newOpt = { name, price: isNaN(price) ? 0 : price };
+            if (name_mm) newOpt.name_mm = name_mm;
+
+            currentOptions.push(newOpt);
+            
+            document.getElementById('opt-name').value = '';
+            document.getElementById('opt-name-mm').value = '';
+            document.getElementById('opt-price').value = '0';
+            document.getElementById('opt-name').focus(); 
+            
+            renderOptionList();
+            generateTranslationFields(); 
+        }
+
+        function removeOption(idx) { 
+            currentOptions.splice(idx, 1); 
+            renderOptionList(); 
+            generateTranslationFields(); 
+        }
+
+        function renderOptionList() {
+            document.getElementById('option-list').innerHTML = currentOptions.map((opt, idx) => `
+                <div class="flex justify-between items-center bg-white px-3 py-2 rounded border border-gray-200 text-xs">
+                    <div class="flex flex-col">
+                        <span class="font-bold">${opt.name} ${opt.name_mm ? `(${opt.name_mm})` : ''} <span class="text-brand">+${opt.price}</span></span>
+                    </div>
+                    <button onclick="removeOption(${idx})" class="text-red-500 hover:bg-red-50 p-1">✕</button>
+                </div>`).join('');
+        }
+
+        // --- API ---
+        async function fetchTrans(text, target) {
+            if(!text) return "";
+            try {
+                const apiLang = target === 'cn' ? 'zh' : target;
+                const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${apiLang}`);
+                const data = await res.json();
+                return data.responseData.translatedText;
+            } catch(e) { return text; }
+        }
+
+        async function autoTranslate() {
+            const btn = document.getElementById('btn-translate'); const original = btn.innerHTML;
+            btn.innerHTML = `<span class="loader"></span> Translating...`; btn.disabled = true;
+            
+            const name = document.getElementById('name').value.trim();
+            const desc = document.getElementById('description').value.trim();
+            
+            for(let lang of languages) {
+                const code = lang.code;
+                if(name) {
+                    const t = await fetchTrans(name, code);
+                    document.getElementById(`name_${code}`).value = t;
+                    tempTransState[`name_${code}`] = t;
+                }
+                if(desc) {
+                    const t = await fetchTrans(desc, code);
+                    document.getElementById(`desc_${code}`).value = t;
+                    tempTransState[`desc_${code}`] = t;
+                }
+
+                for(let i=0; i<currentOptions.length; i++) {
+                    let opt = currentOptions[i];
+                    if(!opt[`name_${code}`]) {
+                        opt[`name_${code}`] = await fetchTrans(opt.name, code);
+                    }
+                    currentOptions[i] = opt;
+                }
+            }
+            
+            generateTranslationFields(); 
+            btn.innerHTML = original; btn.disabled = false;
+            document.getElementById('trans-panel').classList.remove('hidden');
+        }
+
+        // --- SAVE/EDIT ---
+        function saveItem() {
+            const idInput = document.getElementById('edit-id').value;
+            const name = document.getElementById('name').value.trim();
+            const price = parseFloat(document.getElementById('price').value);
+            const description = document.getElementById('description').value.trim();
+            const image = document.getElementById('image').value.trim();
+            const name_mm = document.getElementById('name_mm').value.trim();
+            const desc_mm = document.getElementById('desc_mm').value.trim();
+            
+            let cat = document.getElementById('category').value;
+            if (cat === 'Other') { cat = document.getElementById('new-category-input').value.trim(); if(cat) { categories.add(cat); updateCategorySelect(); } else return alert("Enter cat"); }
+            if (!name || isNaN(price)) return alert("Enter English Name/Price");
+
+            const newItem = { id: 0, name, price, category: cat, image, description, options: [...currentOptions] };
+            if(name_mm) newItem.name_mm = name_mm; if(desc_mm) newItem.description_mm = desc_mm;
+            
+            // Collect from Translation Boxes
+            languages.forEach(l => {
+                const n = document.getElementById(`name_${l.code}`).value.trim();
+                const d = document.getElementById(`desc_${l.code}`).value.trim();
+                if(n) newItem[`name_${l.code}`] = n;
+                if(d) newItem[`description_${l.code}`] = d;
+            });
+
+            if (idInput) { const idx = items.findIndex(i => i.id == idInput); if(idx !== -1) items[idx] = { ...items[idx], ...newItem }; } 
+            else items.push(newItem);
+
+            reindexIds(); clearForm(); renderFilters(); updatePreview(); updateJsonOutput();
+        }
+
+        function editItem(id) {
+            const item = items.find(i => i.id === id); if (!item) return;
+            document.getElementById('edit-id').value = item.id;
+            ['name','price','description','image'].forEach(k => document.getElementById(k).value = item[k]||'');
+            document.getElementById('name_mm').value = item.name_mm || '';
+            document.getElementById('desc_mm').value = item.description_mm || '';
+            
+            // 1. Deep Copy Options
+            currentOptions = item.options ? JSON.parse(JSON.stringify(item.options)) : []; 
+            
+            // 2. Clear temp state so we don't restore old junk
+            tempTransState = {};
+
+            // 3. Render DOM (Empty or basic state)
+            renderOptionList(); 
+            generateTranslationFields(); 
+
+            // 4. Force Fill Translation Inputs from JSON Data
+            languages.forEach(l => {
+                const nBox = document.getElementById(`name_${l.code}`);
+                const dBox = document.getElementById(`desc_${l.code}`);
+                if(nBox) nBox.value = item[`name_${l.code}`] || '';
+                if(dBox) dBox.value = item[`description_${l.code}`] || '';
+            });
+
+            previewImageInput(item.image);
+            if (!categories.has(item.category)) { categories.add(item.category); updateCategorySelect(); }
+            document.getElementById('category').value = item.category;
+            
+            document.getElementById('form-mode').innerText = `Edit #${item.id}`;
+            document.getElementById('trans-panel').classList.remove('hidden'); // Show translations
+        }
+
+        function deleteItem(id) { if(confirm('Delete?')) { items = items.filter(i => i.id !== id); reindexIds(); updatePreview(); updateJsonOutput(); } }
+        function renderFilters() { document.getElementById('filter-container').innerHTML = ['All', ...categories].map(c => `<button onclick="currentFilter='${c}';updatePreview();" class="px-2 py-1 rounded text-[10px] font-bold border transition-colors ${currentFilter===c?'bg-brand text-white':'bg-white text-gray-500 hover:bg-gray-50'}">${c}</button>`).join(''); }
+        
+        function updatePreview() {
+            const dItems = currentFilter === 'All' ? items : items.filter(i => i.category === currentFilter);
+            document.getElementById('item-count').innerText = `${dItems.length}`;
+            document.getElementById('preview-list').innerHTML = dItems.map((i, idx) => `
+                <div class="p-3 flex gap-3 group hover:bg-gray-50 border-b border-gray-50 items-center">
+                    <div class="w-6 text-center text-xs font-bold text-gray-300">${idx + 1}</div>
+                    <img src="${i.image||''}" class="w-10 h-10 rounded bg-gray-100 border object-cover">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start"><h4 class="font-bold text-gray-800 text-sm truncate">${i.name} (${i.name_mm})</h4><span class="font-bold text-brand text-xs">${i.price}</span></div>
+                    </div>
+                    <div class="flex gap-2"><button onclick="editItem(${i.id})" class="text-blue-500 hover:bg-blue-50 p-1">✏️</button><button onclick="deleteItem(${i.id})" class="text-red-500 hover:bg-red-50 p-1">🗑️</button></div>
+                </div>`).join('');
+            updateJsonOutput();
+        }
+
+        function updateJsonOutput() { document.getElementById('json-output').value = JSON.stringify({ categories: ["All", ...categories], items: items }, null, 2); }
+        function copyJson() { document.getElementById('json-output').select(); document.execCommand('copy'); alert('JSON Copied!'); }
+        
+        function clearForm() {
+            document.getElementById('edit-id').value = '';
+            document.querySelectorAll('input:not([type=file]), textarea').forEach(i => i.value = '');
+            document.getElementById('category').value = 'Burmese Curry'; currentOptions = []; renderOptionList(); 
+            tempTransState = {}; 
+            generateTranslationFields();
+            document.getElementById('form-mode').innerText = "New"; document.getElementById('img-preview-mini').classList.add('hidden');
+            document.getElementById('trans-panel').classList.add('hidden');
+        }
+        function updateCategorySelect() { document.getElementById('category').innerHTML = [...categories].map(c => `<option value="${c}">${c}</option>`).join('') + `<option value="Other">-- Add New --</option>`; }
+        function toggleNewCategory() { const inp = document.getElementById('new-category-input'); if(inp.classList.contains('hidden')){document.getElementById('category').value='Other';inp.classList.remove('hidden');}else{inp.classList.add('hidden');} }
+        function previewImageInput(url) { const img=document.getElementById('img-preview-mini'); if(url){img.src=url;img.classList.remove('hidden');}else{img.classList.add('hidden');} }
+        function downloadJson() { reindexIds(); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([document.getElementById('json-output').value],{type:'application/json'})); a.download='menu.json'; a.click(); }
+        function loadJsonFile(inp) { const r=new FileReader(); r.onload=e=>{ const d=JSON.parse(e.target.result); items=d.items||[]; const lc=new Set(d.categories||[]); lc.delete('All'); categories=new Set([...categories, ...lc]); init(); }; r.readAsText(inp.files[0]); }
+        checkSession();
+    </script>
+</body>
+</html>
