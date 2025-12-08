@@ -1,7 +1,7 @@
 // --- 1. LOCALIZATION & CONFIG ---
 const ui = {
     en: { your_order: "Your Order", total: "Total", add: "Add", select: "Select Option", wa: "Order via WhatsApp", empty: "Cart is empty", start: "Start Ordering", customize: "Customize", clear: "Clear", confirm_clear: "Are you sure you want to clear the cart?" },
-    mm: { your_order: "မှာယူထားသောစာရင်း", total: "စုစုပေါင်း", add: "ထည့်မယ်", select: "ရွေးချယ်ပါ", wa: "WhatsApp ဖြင့်မှာယူမယ်", empty: "ဘာမှမရှိသေးပါ", start: "စတင်မှာယူမယ်", customize: "စိတ်ကြိုက်", clear: "ဖျက်မည်", confirm_clear: "အကုန်ဖျက်မှာ သေချာပါသလား?" }, 
+    mm: { your_order: "မှာယူထားသောစာရင်း", total: "စုစုပေါင်း", add: "မှာမည်", select: "ရွေးချယ်ပါ", wa: "WhatsApp ဖြင့်မှာယူမယ်", empty: "ဘာမှမရှိသေးပါ", start: "စတင်မှာယူမယ်", customize: "စိတ်ကြိုက်", clear: "ဖျက်မည်", confirm_clear: "အကုန်ဖျက်မှာ သေချာပါသလား?" }, 
     th: { your_order: "รายการที่สั่ง", total: "ยอดรวม", add: "เพิ่ม", select: "เลือกตัวเลือก", wa: "สั่งทาง WhatsApp", empty: "ตะกร้าว่างเปล่า", start: "ดูเมนู", customize: "ตัวเลือก", clear: "ล้าง", confirm_clear: "ล้างตะกร้า?" },
     ru: { your_order: "Ваш заказ", total: "Итого", add: "Добавить", select: "Выбрать", wa: "Заказать", empty: "Пусто", start: "Меню", customize: "Опции", clear: "Очистить", confirm_clear: "Очистить?" },
     cn: { your_order: "您的订单", total: "总计", add: "添加", select: "选择", wa: "下单", empty: "空", start: "点餐", customize: "选配", clear: "清空", confirm_clear: "清空?" },
@@ -250,7 +250,7 @@ function checkout() {
     const entries = Object.entries(appState.cart);
     if(!entries.length) return alert(t('empty'));
     let msg = "", tot = 0, isMM = appState.lang === 'mm';
-    msg = isMM ? "မင်္ဂလာပါ Dine Khin 🙏 အောက်ပါအတိုင်း မှာယူလိုပါတယ်:\n\n" : "Hello Dine Khin 🙏 I would like to order:\n\n";
+    msg = isMM ? "မင်္ဂလာပါ Dine Khin 🙏 ဒါလေးတွေမှာချင်ပါတယ်\n\n" : "Hello Dine Khin 🙏 I would like to order:\n\n";
     entries.forEach(([k, v], i) => {
         const sub = v.p * v.q; tot += sub;
         const itemName = isMM ? getTxt(v.i, 'name') : v.i.name;
@@ -258,5 +258,5 @@ function checkout() {
         msg += `*${i+1}. ${itemName}* ${optName}\n   └ ${v.q} x ${v.p} = ${sub} ฿\n\n`;
     });
     msg += isMM ? `----------------\n*စုစုပေါင်း: ${tot} THB*\n----------------` : `----------------\n*Total: ${tot} THB*\n----------------`;
-    window.open(`https://wa.me/66800000000?text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://wa.me/66626410636?text=${encodeURIComponent(msg)}`, '_blank');
 }
