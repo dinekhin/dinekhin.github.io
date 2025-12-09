@@ -1,7 +1,6 @@
 {
     "categories": [
         "All",
-        "All",
         "Burmese Curry",
         "BBQ",
         "Salads",
@@ -173,7 +172,7 @@
             "name": "Fermented Bean & Rice Salad",
             "price": 50,
             "category": "Salads",
-            "image": "",
+            "image": "img\/palpotehtaminthoke.jpg",
             "description": "A rice salad from Upper Myanmar, Mandalay.",
             "options": [
                 {
@@ -344,7 +343,7 @@
             "name": "Mandalay Rice Noodle",
             "price": 50,
             "category": "Salads",
-            "image": "",
+            "image": "img\/meeshay.jpg",
             "description": "Meeshay (pronounced [mjíʃè]; also spelt mi shay, mee shay, mee shei) is a Burmese cuisine dish of rice noodles with a meat sauce. The dish originated from the Chinese mixian (simplified Chinese: 米线) and became a specialty of the Shan people of Eastern Myanmar. Regional variants exist, but the two main types are the normal Mogok meeshay and the Mandalay version. Now, this is Mandalay Meeshay.",
             "options": [
                 {
@@ -506,7 +505,7 @@
             "name": "Mala Xiang Guo",
             "price": 200,
             "category": "Burmese Curry",
-            "image": "",
+            "image": "img\/malaxiangguo.jpg",
             "description": "",
             "options": [
                 {
@@ -568,7 +567,7 @@
             "name": "Mala Salad",
             "price": 100,
             "category": "Burmese Curry",
-            "image": "",
+            "image": "img\/malahin.jpg",
             "description": "",
             "options": [],
             "name_mm": "မာလာဟင်း",
@@ -587,7 +586,7 @@
             "name": "Mala Frech Fries",
             "price": 70,
             "category": "Burmese Curry",
-            "image": "",
+            "image": "img\/malarlookyaw.jpg",
             "description": "French Fries mixed with mala sauce.",
             "options": [],
             "name_mm": "အာလူးမာလာ",
@@ -634,7 +633,7 @@
             "name": "Mala Chicken Legs",
             "price": 50,
             "category": "Burmese Curry",
-            "image": "",
+            "image": "img\/kyatchayhtoukmala.jpg",
             "description": "Chicken legs mixed with mala sauce",
             "options": [],
             "name_mm": "ကြက်ခြေထောက်မာလာ",
@@ -942,7 +941,7 @@
             "name": "Lu Chin Salad",
             "price": 100,
             "category": "Burmese Curry",
-            "image": "",
+            "image": "img\/luchin.jpg",
             "description": "",
             "options": [],
             "name_mm": "လုချင်းသုပ်",
@@ -1094,7 +1093,7 @@
             "name": "Kim Chi Fried Rice",
             "price": 80,
             "category": "Fried Rice",
-            "image": "",
+            "image": "img\/kimchihtaminkyaw.jpg",
             "description": "",
             "options": [
                 {
@@ -1190,7 +1189,7 @@
             "name": "Pork BBQ with Lettuce",
             "price": 200,
             "category": "Burmese Curry",
-            "image": "",
+            "image": "img\/watsalat.jpg",
             "description": "",
             "options": [],
             "name_mm": "ဝက်ဆလပ်",
@@ -1346,6 +1345,42 @@
             "name_ko": "코카콜라(Coca Cola)",
             "name_ja": "コカ・コーラ",
             "name_de": "Coca Cola"
+        },
+        {
+            "id": 41,
+            "name": "Fish Paste Fried Rice",
+            "price": 60,
+            "category": "Fried Rice",
+            "image": "img\/ngapihtaminkyaw.jpg",
+            "description": "",
+            "options": [
+                {
+                    "name": "Fried Egg",
+                    "price": 0,
+                    "name_mm": "ကြက်ဥ"
+                },
+                {
+                    "name": "Chicken",
+                    "price": 30,
+                    "name_mm": "ကြက်"
+                },
+                {
+                    "name": "Pork",
+                    "price": 30,
+                    "name_mm": "ဝက်"
+                }
+            ],
+            "name_mm": "ငါးပိ ထမင်းကြော်"
+        },
+        {
+            "id": 42,
+            "name": "To-Fu Salad",
+            "price": 40,
+            "category": "Salads",
+            "image": "img\/tofuthoke.jpg",
+            "description": "",
+            "options": [],
+            "name_mm": "တိုဟူးသုပ်"
         }
     ]
 }
