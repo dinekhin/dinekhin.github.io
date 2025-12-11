@@ -4,10 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dine Khin</title>
+    <title>ဒိုင်းခင် - Dine Khin</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;600;700&display=swap"
         rel="stylesheet">
+    <link rel="icon" type="image/jpg" href="img/logo.png">
+
+    <!-- Social Media & SEO Meta Tags -->
+    <meta property="og:title" content="ဒိုင်းခင် - Dine Khin - Burmese Restaurant & BBQ">
+    <meta property="og:description" content="Authentic Burmese cuisine and BBQ in Phuket, Thailand. Order online now!">
+    <!-- Replace with your actual domain -->
+    <meta property="og:image" content="https://dinekhin.github.io/img/logo.png">
+    <meta property="og:url" content="https://dinekhin.github.io/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="ဒိုင်းခင် - Dine Khin">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dine Khin - Burmese Restaurant & BBQ">
+    <meta name="twitter:description" content="Authentic Burmese cuisine and BBQ in Phuket, Thailand.">
+    <meta name="twitter:image" content="https://dinekhin.github.io/img/logo.png">
+
+    <!-- Mobile Theme Color -->
+    <meta name="theme-color" content="#ff7200">
+    <meta name="msapplication-navbutton-color" content="#ff7200">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -78,22 +100,54 @@
         class="fixed inset-0 z-[60] bg-gray-900/95 backdrop-blur-sm flex items-center justify-center p-4 hidden">
 
         <div class="bg-white rounded-2xl p-6 w-full max-w-sm text-center shadow-2xl">
-            <div class="flex justify-center items-center mb-3"><img src="img/logo.jpg"
+            <div class="flex justify-center items-center mb-3"><img src="img/logo.png"
                     class="w-20 h-20 rounded-full object-cover"></div>
             <h2 class="text-xl font-bold mb-4">Select Language</h2>
             <div class="grid grid-cols-2 gap-3">
+                <!-- English -->
                 <button onclick="setLang('en')"
                     class="p-3 border rounded-xl hover:bg-brand hover:text-white transition">🇺🇸 English</button>
+
+                <!-- Burmese -->
                 <button onclick="setLang('mm')"
                     class="p-3 border rounded-xl hover:bg-brand hover:text-white transition font-burmese font-bold">🇲🇲
-                    ဗမာစာ</button>
+                    မြန်မာစာ</button>
+
+                <!-- Thai -->
                 <button onclick="setLang('th')"
                     class="p-3 border rounded-xl hover:bg-brand hover:text-white transition">🇹🇭 ไทย</button>
+
+                <!-- Russian -->
                 <button onclick="setLang('ru')"
                     class="p-3 border rounded-xl hover:bg-brand hover:text-white transition">🇷🇺 Русский</button>
+
+                <!-- Chinese -->
                 <button onclick="setLang('cn')"
                     class="p-3 border rounded-xl hover:bg-brand hover:text-white transition">🇨🇳 中文</button>
-                <!-- Add others as needed -->
+
+                <!-- French -->
+                <button onclick="setLang('fr')"
+                    class="p-3 border rounded-xl hover:bg-brand hover:text-white transition">🇫🇷 Français</button>
+
+                <!-- Hindi -->
+                <button onclick="setLang('hi')"
+                    class="p-3 border rounded-xl hover:bg-brand hover:text-white transition">🇮🇳 हिन्दी</button>
+
+                <!-- Arabic -->
+                <button onclick="setLang('ar')"
+                    class="p-3 border rounded-xl hover:bg-brand hover:text-white transition">🇸🇦 العربية</button>
+
+                <!-- Korean -->
+                <button onclick="setLang('ko')"
+                    class="p-3 border rounded-xl hover:bg-brand hover:text-white transition">🇰🇷 한국어</button>
+
+                <!-- Japanese -->
+                <button onclick="setLang('ja')"
+                    class="p-3 border rounded-xl hover:bg-brand hover:text-white transition">🇯🇵 日本語</button>
+
+                <!-- German -->
+                <button onclick="setLang('de')"
+                    class="p-3 border rounded-xl hover:bg-brand hover:text-white transition">🇩🇪 Deutsch</button>
             </div>
         </div>
     </div>
@@ -102,10 +156,11 @@
     <header class="bg-white sticky top-0 z-40 border-b border-gray-100">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <img src="img/logo.jpg" class="w-10 h-10 rounded-full border border-brand object-cover shadow-sm">
+                <img src="img/logo.png" class="w-10 h-10 rounded-full border border-brand object-cover shadow-sm">
                 <div>
                     <h1 class="font-burmese font-bold text-lg leading-none text-gray-900">Dine Khin</h1>
-                    <p class="text-[10px] text-gray-500 font-medium tracking-wide uppercase">Burmese Restaurant & BBQ (PATONG, PHUKET)</p>
+                    <p class="text-[10px] text-gray-500 font-medium tracking-wide uppercase">Burmese Restaurant & BBQ
+                        (PATONG, PHUKET)</p>
                 </div>
             </div>
             <button onclick="document.getElementById('lang-modal').classList.remove('hidden')"

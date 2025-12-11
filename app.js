@@ -15,10 +15,19 @@ const ui = {
 
 const catTrans = {
     "All": { mm: "အားလုံး", th: "ทั้งหมด", ru: "Все", cn: "全部", fr: "Tout", hi: "सभी", ar: "الكل", ko: "전체", ja: "すべて", de: "Alle" },
-    "Burmese Curry": { mm: "မြန်မာဟင်း", th: "แกงพม่า", ru: "Карри", cn: "咖喱", fr: "Curry", hi: "करी", ar: "كاري", ko: "카레", ja: "カレー", de: "Curry" },
+    "Burmese Curry": { mm: "မြန်မာထမင်းဟင်း", th: "แกงพม่า", ru: "Бирманское карри", cn: "缅甸咖喱", fr: "Curry birman", hi: "बर्मी करी", ar: "كاري بورمي", ko: "미얀마 카레", ja: "ビルマカレー", de: "Burmesisches Curry" },
     "BBQ": { mm: "အကင်", th: "บาร์บีคิว", ru: "Барбекю", cn: "烧烤", fr: "Barbecue", hi: "BBQ", ar: "مشويات", ko: "바비큐", ja: "BBQ", de: "Grill" },
     "Salads": { mm: "အသုပ်", th: "ยำ/สลัด", ru: "Салаты", cn: "沙拉", fr: "Salades", hi: "सलाद", ar: "سلطات", ko: "샐러드", ja: "サラダ", de: "Salate" },
-    "Drinks": { mm: "အချိုရည်", th: "เครื่องดื่ม", ru: "Напитки", cn: "饮料", fr: "Boissons", hi: "पेय", ar: "مشروبات", ko: "음료", ja: "飲み物", de: "Getränke" }
+    "Drinks": { mm: "အချိုရည်", th: "เครื่องดื่ม", ru: "Напитки", cn: "饮料", fr: "Boissons", hi: "पेय", ar: "مشروبات", ko: "음료", ja: "飲み物", de: "Getränke" },
+    "Noodle Soup": { mm: "ခေါက်ဆွဲပြုတ်", th: "ก๋วยเตี๋ยว", ru: "Суп с лапшой", cn: "汤面", fr: "Soupe de nouilles", hi: "नूडल सूप", ar: "حساء المعكرونة", ko: "국수", ja: "ヌードルスープ", de: "Nudelsuppe" },
+    "Fried Rice": { mm: "ထမင်းကြော်", th: "ข้าวผัด", ru: "Жареный рис", cn: "炒饭", fr: "Riz frit", hi: "फ्राइड राइस", ar: "أرز مقلي", ko: "볶음밥", ja: "チャーハン", de: "Gebratener Reis" },
+    "Fried Noodle": { mm: "ခေါက်ဆွဲကြော်", th: "ผัดหมี่", ru: "Жареная лапша", cn: "炒面", fr: "Nouilles frites", hi: "फ्राइड नूडल्स", ar: "نودلز مقلية", ko: "볶음면", ja: "焼きそば", de: "Gebratene Nudeln" },
+    "Rice Salad": { mm: "ထမင်းသုပ်", th: "ข้าวยำ", ru: "Рисовый салат", cn: "拌饭", fr: "Salade de riz", hi: "राइस सलाद", ar: "سلطة أرز", ko: "쌀 샐러드", ja: "ライスサラダ", de: "Reissalat" },
+    "Rice": { mm: "ထမင်း", th: "เมนูข้าว", ru: "Рис", cn: "米饭", fr: "Riz", hi: "चावल", ar: "أرز", ko: "밥", ja: "ご飯", de: "Reis" },
+    "Mala": { mm: "မာလာ", th: "หม่าล่า", ru: "Мала", cn: "麻辣", fr: "Mala", hi: "माला", ar: "مالا", ko: "마라", ja: "マーラー", de: "Mala" },
+    "Appetizer": { mm: "အဆာပြေစာ", th: "ของทานเล่น", ru: "Закуски", cn: "开胃菜", fr: "Entrée", hi: "ऐपेटाइज़र", ar: "مقبلات", ko: "에피타이저", ja: "前菜", de: "Vorspeise" },
+    "Steamed Rice": { mm: "ထမင်းဖြူ", th: "ข้าวสวย", ru: "Вареный рис", cn: "白饭", fr: "Riz vapeur", hi: "उबले चावल", ar: "أرز على البخار", ko: "공깃밥", ja: "白ご飯", de: "Gedämpfter Reis" },
+    "Vegetables": { mm: "အသီးအရွက်", th: "ผัก", ru: "Овощи", cn: "蔬菜", fr: "Légumes", hi: "सब्जियां", ar: "خضروات", ko: "야채", ja: "野菜", de: "Gemüse" }
 };
 
 let appState = { lang: 'en', menu: [], cart: {}, cat: 'All', modalItem: null, modalOpt: null };
@@ -40,9 +49,24 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- HELPER: GET IMAGE OR PLACEHOLDER ---
+// function getImg(item) {
+//     if (item.image && item.image.trim() !== "") return item.image;
+//     // Auto-generate placeholder using current language name
+//     const txt = getTxt(item, 'name'); 
+//     return `https://placehold.co/300x300/FF7200/FFFFFF?text=${encodeURIComponent(txt)}`;
+// }
+
+// Newer version to handle relative paths
 function getImg(item) {
-    if (item.image && item.image.trim() !== "") return item.image;
-    // Auto-generate placeholder using current language name
+    if (item.image && item.image.trim() !== "") {
+        // If it's a full URL (like placehold.co), use it
+        if (item.image.startsWith('http')) return item.image;
+        
+        // If it's just a filename (e.g. "curry.jpg"), assume it's in the GitHub img folder
+        // Since app.js is on GitHub, relative path 'img/' works fine.
+        return `img/${item.image}`;
+    }
+    // Placeholder fallback
     const txt = getTxt(item, 'name'); 
     return `https://placehold.co/300x300/FF7200/FFFFFF?text=${encodeURIComponent(txt)}`;
 }
@@ -88,7 +112,8 @@ function updateUIText() { document.querySelectorAll('[data-i18n]').forEach(e => 
 // --- DATA & RENDER ---
 async function fetchMenu() {
     try {
-        const res = await fetch('menu.json');
+        // const res = await fetch('menu.json');
+        const res = await fetch('https://oceanviewtreasure.com/api/menu.json');
         appState.menuData = await res.json();
         appState.menu = appState.menuData.items;
         renderCats(appState.menuData.categories); renderMenu('All');
