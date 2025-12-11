@@ -49,27 +49,27 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- HELPER: GET IMAGE OR PLACEHOLDER ---
-// function getImg(item) {
-//     if (item.image && item.image.trim() !== "") return item.image;
-//     // Auto-generate placeholder using current language name
-//     const txt = getTxt(item, 'name'); 
-//     return `https://placehold.co/300x300/FF7200/FFFFFF?text=${encodeURIComponent(txt)}`;
-// }
-
-// Newer version to handle relative paths
 function getImg(item) {
-    if (item.image && item.image.trim() !== "") {
-        // If it's a full URL (like placehold.co), use it
-        if (item.image.startsWith('http')) return item.image;
-        
-        // If it's just a filename (e.g. "curry.jpg"), assume it's in the GitHub img folder
-        // Since app.js is on GitHub, relative path 'img/' works fine.
-        return `img/${item.image}`;
-    }
-    // Placeholder fallback
+    if (item.image && item.image.trim() !== "") return item.image;
+    // Auto-generate placeholder using current language name
     const txt = getTxt(item, 'name'); 
     return `https://placehold.co/300x300/FF7200/FFFFFF?text=${encodeURIComponent(txt)}`;
 }
+
+// Newer version to handle relative paths
+// function getImg(item) {
+//     if (item.image && item.image.trim() !== "") {
+//         // If it's a full URL (like placehold.co), use it
+//         if (item.image.startsWith('http')) return item.image;
+        
+//         // If it's just a filename (e.g. "curry.jpg"), assume it's in the GitHub img folder
+//         // Since app.js is on GitHub, relative path 'img/' works fine.
+//         return `img/${item.image}`;
+//     }
+//     // Placeholder fallback
+//     const txt = getTxt(item, 'name'); 
+//     return `https://placehold.co/300x300/FF7200/FFFFFF?text=${encodeURIComponent(txt)}`;
+// }
 
 // --- LOCAL STORAGE ---
 function loadCartFromStorage() {
