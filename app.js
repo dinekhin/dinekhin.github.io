@@ -26,7 +26,7 @@ const catTrans = {
     "Rice": { mm: "ထမင်း", th: "เมนูข้าว", ru: "Рис", cn: "米饭", fr: "Riz", hi: "चावल", ar: "أرز", ko: "밥", ja: "ご飯", de: "Reis" },
     "Mala": { mm: "မာလာ", th: "หม่าล่า", ru: "Мала", cn: "麻辣", fr: "Mala", hi: "माला", ar: "مالا", ko: "마라", ja: "マーラー", de: "Mala" },
     "Appetizer": { mm: "အဆာပြေစာ", th: "ของทานเล่น", ru: "Закуски", cn: "开胃菜", fr: "Entrée", hi: "ऐपेटाइज़र", ar: "مقبلات", ko: "에피타이저", ja: "前菜", de: "Vorspeise" },
-    "Steamed Rice": { mm: "ထမင်းဖြူ", th: "ข้าวสวย", ru: "Вареный рис", cn: "白饭", fr: "Riz vapeur", hi: "उबले चावल", ar: "أرز على البخار", ko: "공깃밥", ja: "白ご飯", de: "Gedämpfter Reis" },
+    "Steamed Rice": { mm: "ထမင်းပေါင်း", th: "ข้าวสวย", ru: "Вареный рис", cn: "白饭", fr: "Riz vapeur", hi: "उबले चावल", ar: "أرز على البخار", ko: "공깃밥", ja: "白ご飯", de: "Gedämpfter Reis" },
     "Vegetables": { mm: "အသီးအရွက်", th: "ผัก", ru: "Овощи", cn: "蔬菜", fr: "Légumes", hi: "सब्जियां", ar: "خضروات", ko: "야채", ja: "野菜", de: "Gemüse" }
 };
 
@@ -53,7 +53,7 @@ function getImg(item) {
     if (item.image && item.image.trim() !== "") return item.image;
     // Auto-generate placeholder using current language name
     const txt = getTxt(item, 'name'); 
-    return `https://placehold.co/300x300/FF7200/FFFFFF?text=${encodeURIComponent(txt)}`;
+    return `https://oceanviewtreasure.com/api/300x300?bg=ff7200&color=fffff&text=${encodeURIComponent(txt)}`;
 }
 
 // Newer version to handle relative paths
