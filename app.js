@@ -53,7 +53,7 @@ function getImg(item) {
     if (item.image && item.image.trim() !== "") return item.image;
     // Auto-generate placeholder using current language name
     const txt = getTxt(item, 'name'); 
-    return `https://oceanviewtreasure.com/api/300x300?bg=ff7200&color=fffff&text=${encodeURIComponent(txt)}`;
+    return `https://oceanviewtreasure.com/api/300x300?bg=ff7200&color=ffffff&text=${encodeURIComponent(txt)}`;
 }
 
 // Newer version to handle relative paths
