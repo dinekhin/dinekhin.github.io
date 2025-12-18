@@ -1542,7 +1542,7 @@
                 },
                 {
                     "name": "Chicken",
-                    "price": 30,
+                    "price": 20,
                     "name_mm": "ကြက်",
                     "name_th": "ไก่",
                     "name_ru": "Курица",
@@ -1556,7 +1556,7 @@
                 },
                 {
                     "name": "Pork",
-                    "price": 30,
+                    "price": 20,
                     "name_mm": "ဝက်",
                     "name_th": "เนื้อหมู",
                     "name_ru": "Свинина",
