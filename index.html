@@ -1,26 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ဒိုင်းခင် - Dine Khin | Menu</title>
-    
+
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="icon" type="image/png" href="img/logo.png">
 
-    <!-- Social Media Sharing Meta Tags (Open Graph) -->
-    <meta property="og:title" content="ဒိုင်းခင် - Dine Khin | Authentic Burmese Cuisine & BBQ">
-    <meta property="og:description" content="Order authentic Burmese food, BBQ, and drinks online. View our menu and order via WhatsApp!">
+    <!-- Social Media Sharing Meta Tags -->
+    <meta property="og:title" content="ဒိုင်းခင် - Dine Khin | Authentic Burmese Cuisine">
+    <meta property="og:description" content="Order authentic Burmese food, BBQ, and drinks online.">
     <meta property="og:image" content="https://dinekhin.github.io/img/logo.png">
-    <meta property="og:url" content="https://dinekhin.github.io/">
-    <meta property="og:type" content="website">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="ဒိုင်းခင် - Dine Khin | Authentic Burmese Cuisine">
-    <meta name="twitter:description" content="Order authentic Burmese food, BBQ, and drinks online.">
-    <meta name="twitter:image" content="https://dinekhin.github.io/img/logo.png">
 
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -37,40 +32,95 @@
     </script>
 
     <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        * { -webkit-tap-highlight-color: transparent; }
-        body.locked { overflow: hidden; }
-        
-        .badge-hot { background: linear-gradient(135deg, #ef4444 0%, #f97316 100%); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); }
-        .badge-new { background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); }
-        .badge-special { background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4); }
-        .badge-veg { background: linear-gradient(135deg, #10b981 0%, #34d399 100%); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4); }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
 
-        @keyframes pulse-soft { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        .animate-pulse-soft { animation: pulse-soft 2s infinite; }
-        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .animate-slide-up { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
-        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        
-        #bottom-cart-bar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .cart-hidden { transform: translateY(150%); }
-        .cart-visible { transform: translateY(0); }
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body.locked {
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .badge-hot {
+            background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .badge-new {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .badge-special {
+            background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .badge-veg {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        #bottom-cart-bar {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cart-hidden {
+            transform: translateY(150%);
+        }
+
+        .cart-visible {
+            transform: translateY(0);
+        }
     </style>
 </head>
 
 <body class="bg-gray-50 text-gray-800 pb-32 selection:bg-brand selection:text-white">
 
     <!-- LANGUAGE MODAL -->
-    <div id="lang-modal" class="fixed inset-0 z-[60] bg-gray-900/95 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl animate-slide-up max-h-[70vh] flex flex-col">
+    <div id="lang-modal"
+        class="fixed inset-0 z-[60] bg-gray-900/95 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div
+            class="bg-white rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl animate-slide-up max-h-[70vh] flex flex-col">
             <div class="flex-none">
                 <div class="flex justify-center mb-4">
-                    <img src="img/logo.png" class="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg" onerror="this.src='https://placehold.co/100x100/ff7200/ffffff?text=Logo'">
+                    <img src="img/logo.png" class="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg"
+                        onerror="this.src='https://placehold.co/100x100/ff7200/ffffff?text=Logo'">
                 </div>
                 <h2 class="text-xl font-bold mb-1">Select Language</h2>
-                <p class="text-gray-400 mb-4 text-xs">Scroll down and Choose your preferred language</p>
+                <p class="text-gray-400 mb-4 text-xs">Choose your preferred language</p>
             </div>
             <div class="flex-1 overflow-y-auto custom-scroll pr-1">
                 <div class="grid grid-cols-2 gap-3" id="lang-grid"></div>
@@ -82,17 +132,17 @@
     <div id="sort-modal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="toggleSort()"></div>
         <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[2rem] shadow-2xl p-6 animate-slide-up">
-            <h3 class="font-bold text-lg mb-4 text-gray-800 flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/></svg> Sort Menu</h3>
+            <h3 class="font-bold text-lg mb-4 text-gray-800 flex items-center gap-2">Sort Menu</h3>
             <div class="space-y-2">
-                <button onclick="applySort('rec')" class="w-full text-left p-4 rounded-xl hover:bg-gray-50 font-medium text-gray-700 flex justify-between items-center group">
-                    Recommended <span id="check-rec" class="text-brand hidden text-xl">✓</span>
-                </button>
-                <button onclick="applySort('price_asc')" class="w-full text-left p-4 rounded-xl hover:bg-gray-50 font-medium text-gray-700 flex justify-between items-center group">
-                    Price: Low to High <span id="check-price_asc" class="text-brand hidden text-xl">✓</span>
-                </button>
-                <button onclick="applySort('price_desc')" class="w-full text-left p-4 rounded-xl hover:bg-gray-50 font-medium text-gray-700 flex justify-between items-center group">
-                    Price: High to Low <span id="check-price_desc" class="text-brand hidden text-xl">✓</span>
-                </button>
+                <button onclick="applySort('rec')"
+                    class="w-full text-left p-4 rounded-xl hover:bg-gray-50 font-medium text-gray-700 flex justify-between items-center">Recommended
+                    <span id="check-rec" class="text-brand hidden">✓</span></button>
+                <button onclick="applySort('price_asc')"
+                    class="w-full text-left p-4 rounded-xl hover:bg-gray-50 font-medium text-gray-700 flex justify-between items-center">Price:
+                    Low to High <span id="check-price_asc" class="text-brand hidden">✓</span></button>
+                <button onclick="applySort('price_desc')"
+                    class="w-full text-left p-4 rounded-xl hover:bg-gray-50 font-medium text-gray-700 flex justify-between items-center">Price:
+                    High to Low <span id="check-price_desc" class="text-brand hidden">✓</span></button>
             </div>
         </div>
     </div>
@@ -101,33 +151,49 @@
     <header class="bg-white sticky top-0 z-40 border-b border-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)]">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <img src="img/logo.png" onerror="this.src='https://placehold.co/100x100/ff7200/ffffff?text=DK'" 
-                     class="w-11 h-11 rounded-full border border-gray-100 object-cover shadow-sm">
+                <img src="img/logo.png" onerror="this.src='https://placehold.co/100x100/ff7200/ffffff?text=DK'"
+                    class="w-11 h-11 rounded-full border border-gray-100 object-cover shadow-sm">
                 <div>
-                    <h1 class="font-burmese font-bold text-lg leading-none text-gray-900 tracking-tight py-1">ဒိုင်းခင် - Dine Khin</h1>
-                    <p class="text-[10px] text-gray-500 font-bold tracking-widest uppercase mt-0.5">Burmese Restaurant & BBQ (PATONG, PHUKET)</p>
+                    <h1 class="font-burmese font-bold text-lg leading-none text-gray-900 tracking-tight py-1">ဒိုင်းခင်
+                        - Dine Khin</h1>
+                    <p class="text-[10px] text-gray-500 font-bold tracking-widest uppercase mt-0.5">Burmese Restaurant &
+                        BBQ</p>
                 </div>
             </div>
-            <button onclick="document.getElementById('lang-modal').classList.remove('hidden'); toggleBodyLock(true);" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-50 hover:bg-gray-100 text-xl transition-colors border border-gray-100">🌐</button>
+            <button onclick="document.getElementById('lang-modal').classList.remove('hidden'); toggleBodyLock(true);"
+                class="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-gray-50 hover:bg-gray-100 transition-colors border border-brand group active:scale-95">
+
+                <!-- Icon: Flag on Mobile, Globe on Desktop -->
+                <div class="flex items-center justify-center">
+                    <span id="header-lang-flag" class="md:hidden text-lg leading-none drop-shadow-sm">🇺🇸</span>
+                    <span class="hidden md:block text-lg text-gray-600">🌐</span>
+                </div>
+
+                <!-- Text Hint: e.g., "EN" -->
+                <span id="header-lang-text" class="text-xs font-bold text-gray-600 group-hover:text-brand">EN</span>
+
+                <!-- Chevron Arrow -->
+                <svg class="w-3 h-3 text-gray-400 group-hover:text-brand transition-colors" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
         </div>
 
         <!-- Search & Filter -->
         <div class="px-4 pb-3 container mx-auto">
             <div class="flex gap-2">
                 <div class="relative flex-1">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    </span>
-                    <input type="text" id="search-input" oninput="handleSearch()" placeholder="Search..." 
-                           class="block w-full pl-10 pr-4 py-2.5 border-none rounded-2xl bg-gray-100 focus:bg-white focus:ring-2 focus:ring-brand/20 text-sm font-medium transition-all outline-none placeholder-gray-400">
+                    <span
+                        class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">🔍</span>
+                    <input type="text" id="search-input" oninput="handleSearch()" placeholder="Search..."
+                        class="block w-full pl-10 pr-4 py-2.5 border-none rounded-2xl bg-gray-100 focus:bg-white focus:ring-2 focus:ring-brand/20 text-sm font-medium transition-all outline-none placeholder-gray-400">
                 </div>
-                <!-- Filter Button -->
-                <button onclick="toggleSort()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3.5 rounded-2xl border border-transparent transition-colors flex items-center justify-center">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/></svg>
-                </button>
+                <button onclick="toggleSort()"
+                    class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3.5 rounded-2xl border border-transparent transition-colors flex items-center justify-center">⚙️</button>
             </div>
         </div>
-        
+
         <!-- Categories -->
         <div class="border-t border-gray-50 bg-white/95 backdrop-blur">
             <div id="category-container" class="flex overflow-x-auto gap-2 px-4 py-3 no-scrollbar scroll-smooth"></div>
@@ -141,42 +207,49 @@
 
     <!-- FLOATING CART -->
     <div id="bottom-cart-bar" class="fixed bottom-6 left-4 right-4 z-40 cart-hidden" onclick="toggleCart()">
-        <div class="bg-gray-900 text-white p-4 rounded-2xl shadow-2xl shadow-brand/20 flex justify-between items-center cursor-pointer active:scale-[0.98] transition-transform border border-gray-800">
+        <div
+            class="bg-gray-900 text-white p-4 rounded-2xl shadow-2xl shadow-brand/20 flex justify-between items-center cursor-pointer active:scale-[0.98] transition-transform border border-gray-800">
             <div class="flex items-center gap-3">
-                <div class="bg-brand text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg shadow-lg" id="cart-count-bar">0</div>
+                <div class="bg-brand text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold text-lg shadow-lg"
+                    id="cart-count-bar">0</div>
                 <div class="flex flex-col">
-                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider" data-i18n="total">TOTAL</span>
+                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider"
+                        data-i18n="total">TOTAL</span>
                     <span class="font-bold text-xl leading-none" id="cart-total-bar">0 ฿</span>
                 </div>
             </div>
             <div class="flex items-center gap-2 font-bold text-sm bg-white/10 px-4 py-2 rounded-xl backdrop-blur-sm">
                 <span data-i18n="your_order">View Cart</span>
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <span>🛒</span>
             </div>
         </div>
     </div>
 
     <!-- TOAST -->
-    <div id="toast-container" class="fixed top-24 left-0 right-0 z-[70] px-4 pointer-events-none flex flex-col items-center gap-2"></div>
+    <div id="toast-container"
+        class="fixed top-24 left-0 right-0 z-[70] px-4 pointer-events-none flex flex-col items-center gap-2"></div>
 
     <!-- OPTION MODAL -->
     <div id="option-modal" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeOptionModal()"></div>
-        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[2rem] shadow-[0_-10px_40px_rgba(0,0,0,0.2)] p-6 animate-slide-up max-h-[85vh] overflow-y-auto">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeOptionModal()">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[2rem] shadow-[0_-10px_40px_rgba(0,0,0,0.2)] p-6 animate-slide-up max-h-[85vh] overflow-y-auto">
             <div class="flex justify-between items-start mb-6">
                 <div class="pr-8">
                     <h3 id="opt-modal-title" class="font-burmese text-xl font-bold text-gray-800 leading-tight"></h3>
                     <p id="opt-modal-price" class="text-brand font-extrabold text-2xl mt-1"></p>
                 </div>
-                <button onclick="closeOptionModal()" class="bg-gray-100 p-2 rounded-full text-gray-500 hover:bg-gray-200 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
+                <button onclick="closeOptionModal()"
+                    class="bg-gray-100 p-2 rounded-full text-gray-500 hover:bg-gray-200 transition-colors">✕</button>
             </div>
             <div class="mb-8">
-                <p class="text-xs font-extrabold text-gray-400 uppercase mb-4 tracking-wider" data-i18n="select">SELECT OPTION</p>
+                <p class="text-xs font-extrabold text-gray-400 uppercase mb-4 tracking-wider" data-i18n="select">SELECT
+                    OPTION</p>
                 <div id="opt-modal-list" class="grid grid-cols-1 gap-3"></div>
             </div>
-            <button onclick="confirmAddToCart()" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-4 rounded-2xl shadow-lg shadow-brand/30 transition-all text-lg flex justify-between px-8 active:scale-[0.98]">
+            <button onclick="confirmAddToCart()"
+                class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-4 rounded-2xl shadow-lg shadow-brand/30 transition-all text-lg flex justify-between px-8 active:scale-[0.98]">
                 <span data-i18n="add">Add to Order</span> <span id="opt-modal-total"></span>
             </button>
         </div>
@@ -184,19 +257,20 @@
 
     <!-- CART DRAWER -->
     <div id="cart-modal" class="fixed inset-0 z-50 hidden">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="toggleCart()"></div>
-        <div id="cart-drawer" class="absolute bottom-0 left-0 right-0 md:top-0 md:bottom-0 md:left-auto md:right-0 md:w-[450px] bg-white rounded-t-[2rem] md:rounded-l-[2rem] md:rounded-tr-none shadow-2xl flex flex-col h-[90vh] md:h-full transform transition-transform duration-300 translate-y-full md:translate-y-0 md:translate-x-full">
-            <div class="px-6 py-5 border-b flex justify-between items-center bg-white rounded-t-[2rem] md:rounded-tl-[2rem]">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 transition-opacity duration-300"
+            onclick="toggleCart()"></div>
+        <div id="cart-drawer"
+            class="absolute bottom-0 left-0 right-0 md:top-0 md:bottom-0 md:left-auto md:right-0 md:w-[450px] bg-white rounded-t-[2rem] md:rounded-l-[2rem] md:rounded-tr-none shadow-2xl flex flex-col h-[90vh] md:h-full transform transition-transform duration-300 translate-y-full md:translate-y-0 md:translate-x-full">
+            <div
+                class="px-6 py-5 border-b flex justify-between items-center bg-white rounded-t-[2rem] md:rounded-tl-[2rem]">
                 <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
                     <span class="text-2xl">🛒</span> <span data-i18n="your_order">Cart</span>
                 </h2>
                 <div class="flex gap-2">
-                    <button onclick="clearCart()" class="text-red-500 bg-red-50 p-2.5 rounded-xl hover:bg-red-100 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                    </button>
-                    <button onclick="toggleCart()" class="text-gray-500 bg-gray-100 p-2.5 rounded-xl hover:bg-gray-200 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                    </button>
+                    <button onclick="clearCart()"
+                        class="text-red-500 bg-red-50 p-2.5 rounded-xl hover:bg-red-100 transition-colors">🗑️</button>
+                    <button onclick="toggleCart()"
+                        class="text-gray-500 bg-gray-100 p-2.5 rounded-xl hover:bg-gray-200 transition-colors">✕</button>
                 </div>
             </div>
             <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50"></div>
@@ -205,8 +279,8 @@
                     <span class="text-gray-500 text-sm font-bold uppercase tracking-wide" data-i18n="total">Total</span>
                     <span id="cart-total" class="text-3xl font-extrabold text-gray-900 tracking-tight">0 ฿</span>
                 </div>
-                <button onclick="checkout()" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-4 rounded-2xl shadow-lg shadow-green-500/20 flex items-center justify-center gap-3 text-lg transition-all active:scale-[0.98]">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.991.556 1.947.85 2.793.852H12.04c3.181 0 5.768-2.586 5.769-5.766.001-3.18-2.585-5.769-5.778-5.769zm-5.732 16.326C2.378 19.336 0 15.656 0 11.938 0 5.362 5.362 0 11.938 0 18.514 0 24 5.362 24 11.938c0 6.279-4.832 11.455-10.966 11.921l-1.956 5.141c-.244.642-1.121.684-1.424.068l-3.355-6.57zM12.029 19.456c3.968 0 7.199-3.23 7.2-7.2s-3.232-7.201-7.204-7.2c-3.968 0-7.198 3.23-7.198 7.2 0 1.503.465 2.898 1.253 4.05l-.462 1.685 1.724-.452c1.125.729 2.457 1.157 3.882 1.157h.805z" /></svg>
+                <button onclick="checkout()"
+                    class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-4 rounded-2xl shadow-lg shadow-green-500/20 flex items-center justify-center gap-3 text-lg transition-all active:scale-[0.98]">
                     <span data-i18n="wa">WhatsApp Checkout</span>
                 </button>
             </div>
@@ -214,14 +288,17 @@
     </div>
 
     <!-- IMAGE MODAL -->
-    <div id="image-modal" class="fixed inset-0 z-[80] bg-black/95 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="closeImageModal()">
-        <button class="absolute top-6 right-6 text-white bg-gray-800/50 p-2 rounded-full backdrop-blur-sm z-10 hover:bg-gray-700">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
-        <img id="image-modal-src" src="" class="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300" onclick="event.stopPropagation()">
+    <div id="image-modal"
+        class="fixed inset-0 z-[80] bg-black/95 hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300"
+        onclick="closeImageModal()">
+        <button
+            class="absolute top-6 right-6 text-white bg-gray-800/50 p-2 rounded-full backdrop-blur-sm z-10 hover:bg-gray-700">✕</button>
+        <img id="image-modal-src" src=""
+            class="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl transform scale-95 transition-transform duration-300"
+            onclick="event.stopPropagation()">
     </div>
 
-    <script src="app.js"></script>
-    <!-- <script src="https://oceanviewtreasure.com/api/app.js"></script> -->
+    <script src="https://oceanviewtreasure.com/api/app.js"></script>
 </body>
+
 </html>
