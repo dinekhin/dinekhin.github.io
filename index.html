@@ -18,18 +18,7 @@
     <meta property="og:image" content="https://dinekhin.github.io/img/logo.png">
 
     <!-- Tailwind -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { brand: { DEFAULT: '#ff7200', dark: '#e06500', light: '#fff1e5' } },
-                    fontFamily: { sans: ['Poppins', 'sans-serif'], burmese: ['Padauk', 'sans-serif'] },
-                    boxShadow: { 'soft': '0 10px 40px -10px rgba(0,0,0,0.08)' }
-                }
-            }
-        }
-    </script>
+    <link href="css/style.css" rel="stylesheet">
 
     <style>
         .no-scrollbar::-webkit-scrollbar {
@@ -89,6 +78,7 @@
         .line-clamp-2 {
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -108,6 +98,14 @@
 </head>
 
 <body class="bg-gray-50 text-gray-800 pb-32 selection:bg-brand selection:text-white">
+
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen"
+        class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center transition-opacity duration-500">
+        <img src="img/logo.png" class="w-24 h-24 mb-4 animate-pulse rounded-full" onerror="this.style.display='none'">
+        <div class="w-10 h-10 border-4 border-gray-200 border-t-brand rounded-full animate-spin"></div>
+        <p class="mt-4 text-gray-400 text-xs font-bold tracking-widest uppercase">Loading Menu...</p>
+    </div>
 
     <!-- LANGUAGE MODAL -->
     <div id="lang-modal"
@@ -298,26 +296,11 @@
             onclick="event.stopPropagation()">
     </div>
 
-    <script src="https://oceanviewtreasure.com/api/app.js"></script>
+    <script src="https://oceanviewtreasure.com/api/config.js"></script>
 
-    <!-- <script>
-  (function(d,t) {
-    var BASE_URL="https://app.chatwoot.com";
-    var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-    g.src=BASE_URL+"/packs/js/sdk.js";
-    g.async = true;
-    s.parentNode.insertBefore(g,s);
-    g.onload=function(){
-      window.chatwootSDK.run({
-        websiteToken: 'SJBwzpdQPeQjZ1YaV5L31Brt',
-        baseUrl: BASE_URL
-      })
-    }
-  })(document,"script");
-</script> -->
+    <script src="app.js"></script>
 
 </body>
 
 
 </html>
-
