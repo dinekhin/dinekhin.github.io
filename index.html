@@ -101,10 +101,32 @@
 
     <!-- LOADING SCREEN -->
     <div id="loading-screen"
-        class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center transition-opacity duration-500">
-        <img src="img/logo.png" class="w-24 h-24 mb-4 animate-pulse rounded-full" onerror="this.style.display='none'">
-        <div class="w-10 h-10 border-4 border-gray-200 border-t-brand rounded-full animate-spin"></div>
-        <p class="mt-4 text-gray-400 text-xs font-bold tracking-widest uppercase">Loading Menu...</p>
+        class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center transition-all duration-700 ease-in-out"
+        role="status" aria-label="Loading application">
+
+        <div class="relative flex items-center justify-center mb-6">
+            <div class="absolute w-32 h-32 border-4 border-[#ff7200]/20 rounded-full"></div>
+
+            <div
+                class="absolute w-32 h-32 border-4 border-transparent border-t-[#ff7200] rounded-full animate-spin shadow-[0_0_15px_rgba(255,114,0,0.3)]">
+            </div>
+
+            <img src="img/logo.png" alt="Brand Logo" class="w-24 h-24 rounded-full object-cover animate-pulse"
+                onerror="this.style.display='none'">
+        </div>
+
+        <div class="flex flex-col items-center gap-1">
+            <p class="text-[#ff7200] text-sm font-bold tracking-[0.2em] uppercase">
+                Loading Menu Please Wait
+            </p>
+            <div class="flex gap-1 mt-1">
+                <span class="w-1.5 h-1.5 bg-[#ff7200]/60 rounded-full animate-bounce"
+                    style="animation-delay: 0s"></span>
+                <span class="w-1.5 h-1.5 bg-[#ff7200]/80 rounded-full animate-bounce"
+                    style="animation-delay: 0.15s"></span>
+                <span class="w-1.5 h-1.5 bg-[#ff7200] rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+            </div>
+        </div>
     </div>
 
     <!-- LANGUAGE MODAL -->
