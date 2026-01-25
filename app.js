@@ -12,7 +12,8 @@ let appState = {
     sortBy: 'rec',
     searchQuery: '',
     modalItem: null,
-    modalOpt: null
+    modalOpt: null,
+    theme: 'light' // 'light' or 'dark'
 };
 
 // --- DOM HELPERS ---
@@ -27,7 +28,7 @@ const nodes = {
 
 // --- CORE ---
 document.addEventListener('DOMContentLoaded', () => {
-    initLangModal(); checkLanguage(); loadCart(); fetchMenu();
+    initLangModal(); initTheme(); checkLanguage(); loadCart(); fetchMenu();
 });
 
 // --- LOADING SCREEN ---
@@ -125,6 +126,24 @@ const getImg = (item) => {
     return `${config.placeholderApi}${encodeURIComponent(item.name || 'Food')}`;
 };
 
+// Returns array of images (supports both single 'image' and 'images' array)
+const getImages = (item) => {
+    // If item has images array with entries, use it
+    if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+        return item.images.map(img => {
+            if (img && img.trim() !== '') {
+                return img.startsWith('http') ? img : img;
+            }
+            return null;
+        }).filter(Boolean);
+    }
+    // Fallback to single image
+    return [getImg(item)];
+};
+
+// Carousel state management
+let carouselIntervals = {};
+
 // --- UTILS ---
 
 // Variable to store scroll position to prevent jumping
@@ -165,7 +184,7 @@ function toggleBodyLock(isLocked) {
 // --- LANGUAGE ---
 function initLangModal() {
     nodes.langGrid.innerHTML = languages.map(l =>
-        `<button onclick="setLang('${l.code}')" class="p-4 border border-gray-100 rounded-2xl hover:bg-brand hover:text-white hover:border-brand hover:shadow-lg transition-all duration-200 flex flex-col items-center gap-2 group">
+        `<button onclick="setLang('${l.code}')" class="p-4 border border-gray-100 dark:border-gray-700 rounded-2xl hover:bg-brand hover:text-white hover:border-brand hover:shadow-lg transition-all duration-200 flex flex-col items-center gap-2 group bg-white dark:bg-gray-800 dark:text-gray-200">
             <span class="text-3xl group-hover:scale-110 transition-transform">${l.flag}</span>
             <span class="font-bold text-sm ${l.font || ''}">${l.name}</span>
         </button>`
@@ -204,12 +223,46 @@ function setLang(lang, save = true) {
     if (appState.menu.length) { renderCats(); renderMenu(); updateCartUI(); }
 }
 
+// --- THEME ---
+function initTheme() {
+    const saved = localStorage.getItem('dine_theme');
+    if (saved) {
+        setTheme(saved);
+    } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(prefersDark ? 'dark' : 'light');
+    }
+}
+
+function toggleTheme() {
+    const newTheme = appState.theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+}
+
+function setTheme(t) {
+    appState.theme = t;
+    localStorage.setItem('dine_theme', t);
+
+    const html = document.documentElement;
+    if (t === 'dark') {
+        html.classList.add('dark');
+    } else {
+        html.classList.remove('dark');
+    }
+
+    // Update Toggle Icon if exists
+    const icon = document.getElementById('theme-toggle-icon');
+    if (icon) {
+        icon.innerText = t === 'dark' ? '☀️' : '🌙';
+    }
+}
+
 // --- RENDERING ---
 function renderCats() {
     const cats = appState.menuData.categories || [];
     nodes.cats.innerHTML = cats.map(c => {
         const isActive = appState.cat === c;
-        return `<button onclick="setCat('${c}')" class="px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap border transition-all active:scale-95 ${isActive ? 'bg-brand text-white border-brand shadow-lg shadow-brand/30 ring-2 ring-brand ring-offset-1' : 'bg-gray-100 text-gray-500 border-transparent hover:bg-white hover:border-gray-200'}">
+        return `<button onclick="setCat('${c}')" class="px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap border transition-all active:scale-95 ${isActive ? 'bg-brand text-white border-brand shadow-lg shadow-brand/30 ring-2 ring-brand ring-offset-1' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-transparent hover:bg-white dark:hover:bg-gray-700 hover:border-gray-200'}">
             ${getCatTxt(c)}
         </button>`;
     }).join('');
@@ -267,7 +320,9 @@ function renderMenu() {
 
     items.forEach(item => {
         const hasOpt = item.options?.length > 0;
-        const displayImg = getImg(item);
+        const images = getImages(item);
+        const hasCarousel = images.length > 1;
+        const displayImg = images[0];
 
         let mainName = getTxt(item, 'name');
         let secName = "";
@@ -294,7 +349,7 @@ function renderMenu() {
         let pillsHtml = '';
         if (hasOpt) {
             pillsHtml = `<div class="flex flex-wrap gap-1.5 mt-2.5">
-                ${item.options.map(o => `<span class="inline-block bg-gray-50 border border-gray-300 text-gray-900 text-[10px] font-medium px-2 py-0.5 rounded-md font-burmese">${getTxt(o, 'name')}</span>`).join('')}
+                ${item.options.map(o => `<span class="inline-block bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200 text-[10px] font-medium px-2 py-0.5 rounded-md font-burmese">${getTxt(o, 'name')}</span>`).join('')}
             </div>`;
         }
 
@@ -305,23 +360,46 @@ function renderMenu() {
         if (item.veg) badgesHtml += `<span class="badge-veg text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider flex items-center gap-1"><svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-2.5l7.51-3.49L17.5 6.5 9.99 9.99 6.5 17.5zm5.5-6.6c.61 0 1.1.49 1.1 1.1s-.49 1.1-1.1 1.1-1.1-.49-1.1-1.1.49-1.1 1.1-1.1z"/></svg> VEGETARIAN</span>`;
 
         const card = document.createElement('div');
-        card.className = 'bg-white rounded-[1.5rem] shadow-soft hover:shadow-lg transition-all duration-300 overflow-hidden group border border-gray-50 flex flex-col';
+        card.className = 'bg-white dark:bg-gray-800 rounded-[1.5rem] shadow-soft hover:shadow-lg transition-all duration-300 overflow-hidden group border border-gray-50 dark:border-gray-700 flex flex-col';
+
+        // Build carousel or single image HTML
+        let imageHtml;
+        if (hasCarousel) {
+            const slidesHtml = images.map((img, idx) =>
+                `<img src="${img}" loading="lazy" class="carousel-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${idx === 0 ? 'opacity-100' : 'opacity-0'}" data-slide="${idx}">`
+            ).join('');
+            imageHtml = `
+                <div class="relative aspect-[4/3] bg-gray-100 dark:bg-gray-900 overflow-hidden cursor-pointer carousel-container" 
+                     data-item-id="${item.id}" 
+                     data-total-slides="${images.length}"
+                     onclick="openImageModal(null, ${item.id})"
+                     onmouseenter="pauseCarousel(${item.id})"
+                     onmouseleave="resumeCarousel(${item.id})">
+                    ${slidesHtml}
+                    <div class="absolute top-3 left-3 flex flex-wrap gap-2 z-10">${badgesHtml}</div>
+                    ${hasOpt ? `<div class="absolute bottom-3 right-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur text-gray-800 dark:text-gray-200 text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm flex items-center gap-1 z-10"><span>⚙️</span> ${t('customize')}</div>` : ''}
+                </div>`;
+        } else {
+            imageHtml = `
+                <div class="relative aspect-[4/3] bg-gray-100 dark:bg-gray-900 overflow-hidden cursor-pointer" onclick="openImageModal('${displayImg}')">
+                    <img src="${displayImg}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute top-3 left-3 flex flex-wrap gap-2 z-10">${badgesHtml}</div>
+                    ${hasOpt ? `<div class="absolute bottom-3 right-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur text-gray-800 dark:text-gray-200 text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm flex items-center gap-1"><span>⚙️</span> ${t('customize')}</div>` : ''}
+                </div>`;
+        }
+
         card.innerHTML = `
-            <div class="relative aspect-[4/3] bg-gray-100 overflow-hidden cursor-pointer" onclick="openImageModal('${displayImg}')">
-                <img src="${displayImg}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                <div class="absolute top-3 left-3 flex flex-wrap gap-2 z-10">${badgesHtml}</div>
-                ${hasOpt ? `<div class="absolute bottom-3 right-3 bg-white/90 backdrop-blur text-gray-800 text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm flex items-center gap-1"><span>⚙️</span> ${t('customize')}</div>` : ''}
-            </div>
+            ${imageHtml}
             
             <div class="p-4 flex flex-col flex-1">
                 <div class="flex-1 mb-3">
-                    <h3 class="font-burmese text-lg font-bold text-gray-800 leading-tight mb-1">${mainName}</h3>
+                    <h3 class="font-burmese text-lg font-bold text-gray-800 dark:text-gray-100 leading-tight mb-1">${mainName}</h3>
                     ${secName && secName !== mainName ? `<p class="text-sm text-gray-400 font-medium">${secName}</p>` : ''}
                     ${pillsHtml}
                     ${descHtml} 
                 </div>
                 
-                <div class="flex justify-between items-center mt-auto pt-3 border-t border-gray-50">
+                <div class="flex justify-between items-center mt-auto pt-3 border-t border-gray-50 dark:border-gray-700">
                     <span class="text-2xl font-extrabold text-brand tracking-tight drop-shadow-sm">${priceTxt}</span>
                     <button onclick="${hasOpt ? `openOpt(${item.id})` : `addToCart(${item.id})`}" 
                         class="bg-brand hover:bg-brand-dark text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold text-2xl shadow-lg shadow-brand/30 active:scale-90 transition-all">
@@ -330,7 +408,65 @@ function renderMenu() {
                 </div>
             </div>`;
         nodes.grid.appendChild(card);
+
+        // Start carousel if item has multiple images
+        if (hasCarousel) {
+            startCarousel(item.id);
+        }
     });
+}
+
+// --- CAROUSEL FUNCTIONS ---
+function startCarousel(itemId) {
+    // Clear any existing interval
+    if (carouselIntervals[itemId]) {
+        clearInterval(carouselIntervals[itemId].interval);
+    }
+
+    const container = document.querySelector(`.carousel-container[data-item-id="${itemId}"]`);
+    if (!container) return;
+
+    const totalSlides = parseInt(container.dataset.totalSlides);
+    let currentSlide = 0;
+
+    carouselIntervals[itemId] = {
+        currentSlide: 0,
+        interval: setInterval(() => {
+            if (carouselIntervals[itemId].paused) return;
+
+            const slides = container.querySelectorAll('.carousel-slide');
+            slides[currentSlide].classList.remove('opacity-100');
+            slides[currentSlide].classList.add('opacity-0');
+
+            currentSlide = (currentSlide + 1) % totalSlides;
+            carouselIntervals[itemId].currentSlide = currentSlide;
+
+            slides[currentSlide].classList.remove('opacity-0');
+            slides[currentSlide].classList.add('opacity-100');
+        }, 3500), // 3.5 second interval
+        paused: false
+    };
+}
+
+function pauseCarousel(itemId) {
+    if (carouselIntervals[itemId]) {
+        carouselIntervals[itemId].paused = true;
+    }
+}
+
+function resumeCarousel(itemId) {
+    if (carouselIntervals[itemId]) {
+        carouselIntervals[itemId].paused = false;
+    }
+}
+
+function stopAllCarousels() {
+    Object.keys(carouselIntervals).forEach(id => {
+        if (carouselIntervals[id].interval) {
+            clearInterval(carouselIntervals[id].interval);
+        }
+    });
+    carouselIntervals = {};
 }
 
 function toggleDesc(id) {
@@ -356,13 +492,13 @@ function openOpt(id) {
     el('opt-modal-list').innerHTML = item.options.map((o, i) => {
         const optName = getTxt(o, 'name');
         return `
-        <label class="flex items-center justify-between p-4 rounded-2xl border-2 border-transparent bg-gray-50 hover:bg-orange-50 has-[:checked]:border-brand has-[:checked]:bg-white has-[:checked]:shadow-md cursor-pointer transition-all duration-200 select-none group">
+        <label class="flex items-center justify-between p-4 rounded-2xl border-2 border-transparent bg-gray-50 dark:bg-gray-800 hover:bg-orange-50 dark:hover:bg-gray-700 has-[:checked]:border-brand dark:has-[:checked]:border-brand has-[:checked]:bg-white dark:has-[:checked]:bg-gray-800 has-[:checked]:shadow-md cursor-pointer transition-all duration-200 select-none group">
             <div class="flex items-center gap-4">
-                <div class="w-5 h-5 rounded-full border-2 border-gray-300 group-has-[:checked]:border-brand flex items-center justify-center">
+                <div class="w-5 h-5 rounded-full border-2 border-gray-300 dark:border-gray-600 group-has-[:checked]:border-brand flex items-center justify-center">
                     <div class="w-2.5 h-2.5 rounded-full bg-brand opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></div>
                 </div>
                 <input type="radio" name="opt" class="hidden" ${i === 0 ? 'checked' : ''} onchange="pickOpt(${i})">
-                <span class="font-burmese text-sm font-bold text-gray-700 group-has-[:checked]:text-gray-900">${optName}</span>
+                <span class="font-burmese text-sm font-bold text-gray-700 dark:text-gray-200 group-has-[:checked]:text-gray-900 dark:group-has-[:checked]:text-white">${optName}</span>
             </div>
             ${o.price > 0 ? `<span class="text-xs font-bold text-brand bg-brand/10 px-2 py-1 rounded-lg">+${o.price} ฿</span>` : ''}
         </label>`
@@ -436,17 +572,17 @@ function updateCartUI() {
     if (count === 0) nodes.cartList.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-gray-300 gap-2"><p>${t('empty')}</p></div>`;
     else {
         nodes.cartList.innerHTML = entries.map(([k, v]) => `
-            <div class="flex gap-4 bg-white p-3 rounded-2xl border border-gray-100 items-center shadow-sm">
-                <div class="w-16 h-16 rounded-xl bg-gray-100 overflow-hidden shrink-0"><img src="${getImg(v.i)}" class="w-full h-full object-cover"></div>
+            <div class="flex gap-4 bg-white dark:bg-gray-800 p-3 rounded-2xl border border-gray-100 dark:border-gray-700 items-center shadow-sm">
+                <div class="w-16 h-16 rounded-xl bg-gray-100 dark:bg-gray-900 overflow-hidden shrink-0"><img src="${getImg(v.i)}" class="w-full h-full object-cover"></div>
                 <div class="flex-1 min-w-0">
-                    <h4 class="font-burmese font-bold text-gray-800 text-sm truncate leading-tight">${getTxt(v.i, 'name')}</h4>
-                    ${v.o ? `<p class="text-xs text-gray-500 font-burmese mt-0.5">${getTxt(v.o, 'name')}</p>` : ''}
+                    <h4 class="font-burmese font-bold text-gray-800 dark:text-gray-100 text-sm truncate leading-relaxed py-1">${getTxt(v.i, 'name')}</h4>
+                    ${v.o ? `<p class="text-xs text-gray-200 font-burmese mt-0.5">${getTxt(v.o, 'name')}</p>` : ''}
                     <p class="text-brand font-bold text-sm mt-1">${v.p * v.q} ฿</p>
                 </div>
-                <div class="flex items-center gap-3 bg-gray-50 rounded-xl p-1.5 border border-gray-100">
-                    <button onclick="modCart('${k}', -1)" class="w-7 h-7 flex items-center justify-center bg-white rounded-lg shadow-sm text-gray-600 font-bold active:scale-90 transition-transform">-</button>
-                    <span class="text-sm font-bold w-4 text-center">${v.q}</span>
-                    <button onclick="modCart('${k}', 1)" class="w-7 h-7 flex items-center justify-center bg-white rounded-lg shadow-sm text-brand font-bold active:scale-90 transition-transform">+</button>
+                <div class="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 rounded-xl p-1.5 border border-gray-100 dark:border-gray-800">
+                    <button onclick="modCart('${k}', -1)" class="w-7 h-7 flex items-center justify-center bg-white dark:bg-gray-800 rounded-lg shadow-sm text-gray-600 dark:text-gray-300 font-bold active:scale-90 transition-transform">-</button>
+                    <span class="text-sm font-bold w-4 text-center dark:text-white">${v.q}</span>
+                    <button onclick="modCart('${k}', 1)" class="w-7 h-7 flex items-center justify-center bg-white dark:bg-gray-800 rounded-lg shadow-sm text-brand font-bold active:scale-90 transition-transform">+</button>
                 </div>
             </div>`).join('');
     }
@@ -487,7 +623,17 @@ function showToast(name, opt) {
     setTimeout(() => { d.style.opacity = '0'; d.style.transform = 'translateY(-10px)'; setTimeout(() => d.remove(), 300); }, 2000);
 }
 
-function openImageModal(src) {
+function openImageModal(src, itemId = null) {
+    // Handle carousel items
+    if (itemId) {
+        const item = appState.menu.find(i => i.id === itemId);
+        if (item) {
+            const images = getImages(item);
+            const currentIdx = carouselIntervals[itemId] ? carouselIntervals[itemId].currentSlide : 0;
+            src = images[currentIdx] || images[0];
+        }
+    }
+
     if (!src) return;
     nodes.imgModalSrc.src = src;
     nodes.imgModal.classList.remove('hidden');
