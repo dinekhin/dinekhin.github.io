@@ -42,42 +42,81 @@ function hideLoading() {
 
 // --- DATA ---
 const CACHE_KEY = 'dine_menu_data';
-const CACHE_DURATION = 3 * 60 * 60 * 1000; // 3 Hours
 
 async function fetchMenu() {
     try {
-        // 1. Check Local Cache
+        // 1. Check Local Cache - show immediately if available
         const cached = localStorage.getItem(CACHE_KEY);
+        let usedCache = false;
+
         if (cached) {
-            const { ts, data } = JSON.parse(cached);
-            if (Date.now() - ts < CACHE_DURATION) {
-                console.log("Loading menu from cache...");
+            try {
+                const { data } = JSON.parse(cached);
+                console.log("Loading menu from cache (instant)...");
                 appState.menuData = data;
                 appState.menu = data.items;
                 renderCats(); renderMenu();
                 hideLoading();
-                return;
+                usedCache = true;
+            } catch (e) {
+                console.warn("Cache parse error, will fetch fresh");
             }
         }
 
-        // 2. Fetch from API
+        // 2. Always fetch from API in background to check for updates
         const res = await fetch(config.menuApi);
-
         if (!res.ok) throw new Error("API Error");
+        const freshData = await res.json();
 
-        const data = await res.json();
+        // 3. Compare with cache - if different, update
+        const cachedStr = cached ? JSON.stringify(JSON.parse(cached).data) : '';
+        const freshStr = JSON.stringify(freshData);
 
-        // 3. Save to Cache
-        localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data }));
+        if (cachedStr !== freshStr) {
+            console.log("Menu updated from API!");
+            // Save new data to cache
+            localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: freshData }));
 
-        appState.menuData = data;
-        appState.menu = data.items;
-        renderCats(); renderMenu();
+            // Update UI if we showed cache (user gets fresh data on next interaction or we update now)
+            appState.menuData = freshData;
+            appState.menu = freshData.items;
 
-        // Hide Loader on Success
-        hideLoading();
+            // Only re-render if we already showed cached data (background update)
+            if (usedCache) {
+                console.log("Updating menu UI with fresh data...");
+                renderCats(); renderMenu();
+            }
+        } else {
+            console.log("Cache is up-to-date with API");
+            // Just update timestamp
+            localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: freshData }));
+        }
+
+        // Hide loading if we didn't use cache
+        if (!usedCache) {
+            hideLoading();
+        }
+
     } catch (e) {
         console.error("Menu Load Error:", e);
+
+        // If we already showed cache, don't show error - just log it
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+            console.log("API failed but cache available - continuing with cached data");
+            try {
+                const { data } = JSON.parse(cached);
+                if (!appState.menu || appState.menu.length === 0) {
+                    appState.menuData = data;
+                    appState.menu = data.items;
+                    renderCats(); renderMenu();
+                }
+                hideLoading();
+                return;
+            } catch (parseErr) { }
+        }
+
+        // Only show error if we have nothing to show
         nodes.grid.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center py-16 px-4 text-center animate-fade-in">
     
     <div class="relative mb-6">
@@ -101,7 +140,6 @@ async function fetchMenu() {
     </button>
 </div>`;
 
-        // Hide Loader even on fail, so user sees the error
         hideLoading();
     }
 }
