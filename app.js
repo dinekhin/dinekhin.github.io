@@ -127,7 +127,7 @@ async function fetchMenu() {
     </div>
 
     <h3 class="text-xl font-bold text-gray-800 mb-1">Oops! Menu couldn't load</h3>
-    <p class="text-sm text-gray-500 mb-8 max-w-xs">
+    <p class="text-sm text-gray-600 dark:text-gray-400 mb-8 max-w-xs">
         We're having trouble reaching the server. Please check your connection and try again.
     </p>
 
@@ -300,7 +300,7 @@ function renderCats() {
     const cats = appState.menuData.categories || [];
     nodes.cats.innerHTML = cats.map(c => {
         const isActive = appState.cat === c;
-        return `<button onclick="setCat('${c}')" class="px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap border transition-all active:scale-95 ${isActive ? 'bg-brand text-white border-brand shadow-lg shadow-brand/30 ring-2 ring-brand ring-offset-1' : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-transparent hover:bg-white dark:hover:bg-gray-700 hover:border-gray-200'}">
+        return `<button onclick="setCat('${c}')" class="px-5 py-2.5 rounded-full text-sm font-bold whitespace-nowrap border transition-all active:scale-95 ${isActive ? 'bg-brand text-white border-brand shadow-lg shadow-brand/30 ring-2 ring-brand ring-offset-1' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-transparent hover:bg-white dark:hover:bg-gray-700 hover:border-gray-200'}">
             ${getCatTxt(c)}
         </button>`;
     }).join('');
@@ -352,7 +352,7 @@ function renderMenu() {
     }
 
     if (!items.length) {
-        nodes.grid.innerHTML = `<div class="col-span-full text-center text-gray-400 py-20 flex flex-col items-center"><span class="text-5xl mb-3">🍽️</span><p>No items found</p></div>`;
+        nodes.grid.innerHTML = `<div class="col-span-full text-center text-gray-500 dark:text-gray-400 py-20 flex flex-col items-center"><span class="text-5xl mb-3">🍽️</span><p>No items found</p></div>`;
         return;
     }
 
@@ -432,7 +432,7 @@ function renderMenu() {
             <div class="p-4 flex flex-col flex-1">
                 <div class="flex-1 mb-3">
                     <h3 class="font-burmese text-lg font-bold text-gray-800 dark:text-gray-100 leading-tight mb-1">${mainName}</h3>
-                    ${secName && secName !== mainName ? `<p class="text-sm text-gray-400 font-medium">${secName}</p>` : ''}
+                    ${secName && secName !== mainName ? `<p class="text-sm text-gray-500 dark:text-gray-400 font-medium">${secName}</p>` : ''}
                     ${pillsHtml}
                     ${descHtml} 
                 </div>
@@ -614,7 +614,7 @@ function updateCartUI() {
                 <div class="w-16 h-16 rounded-xl bg-gray-100 dark:bg-gray-900 overflow-hidden shrink-0"><img src="${getImg(v.i)}" class="w-full h-full object-cover"></div>
                 <div class="flex-1 min-w-0">
                     <h4 class="font-burmese font-bold text-gray-800 dark:text-gray-100 text-sm truncate leading-relaxed py-1">${getTxt(v.i, 'name')}</h4>
-                    ${v.o ? `<p class="text-xs text-gray-200 font-burmese mt-0.5">${getTxt(v.o, 'name')}</p>` : ''}
+                    ${v.o ? `<p class="text-xs dark:text-gray-200 font-burmese mt-0.5">${getTxt(v.o, 'name')}</p>` : ''}
                     <p class="text-brand font-bold text-sm mt-1">${v.p * v.q} ฿</p>
                 </div>
                 <div class="flex items-center gap-3 bg-gray-50 dark:bg-gray-900 rounded-xl p-1.5 border border-gray-100 dark:border-gray-800">
@@ -641,15 +641,71 @@ function checkout() {
     const e = Object.entries(appState.cart);
     if (!e.length) return alert(t('empty'));
     let tVal = 0; const isMM = appState.lang === 'mm';
-    let msg = isMM ? "မင်္ဂလာပါ Dine Khin 🙏 ဒါလေးတွေမှာချင်ပါတယ်\n\n" : "Hello Dine Khin 🙏 I would like to order:\n\n";
+    let msg = isMM ? "မင်္ဂလာပါ Dine Khin 🙏 ဒါလေးတွေမှာချင်ပါတယ်\n\n" : "Hello Dine Khin 🙏 I would like to order:\n(မင်္ဂလာပါ၊ ဒါလေးတွေမှာချင်ပါတယ်)\n\n";
     e.forEach(([k, v], i) => {
         const sub = v.p * v.q; tVal += sub;
-        const name = isMM ? (v.i.name_mm || v.i.name) : v.i.name;
-        const opt = v.o ? ` (${isMM ? (v.o.name_mm || v.o.name) : v.o.name})` : '';
-        msg += `*${i + 1}. ${name}*${opt}\n   └ ${v.q} x ${v.p} = ${sub} ฿\n`;
+        const nameEn = v.i.name;
+        const nameMm = v.i.name_mm || v.i.name;
+        const optEn = v.o ? ` (${v.o.name})` : '';
+        const optMm = v.o ? ` (${v.o.name_mm || v.o.name})` : '';
+
+        if (isMM || (nameEn === nameMm && optEn === optMm)) {
+            const n = isMM ? nameMm : nameEn;
+            const o = isMM ? optMm : optEn;
+            msg += `*${i + 1}. ${n}*${o}\n   └ ${v.q} x ${v.p} = ${sub} ฿\n\n`;
+        } else {
+            msg += `*${i + 1}. ${nameEn}*${optEn}\n   [ ${nameMm}${optMm} ]\n   └ ${v.q} x ${v.p} = ${sub} ฿\n\n`;
+        }
     });
-    msg += `\n----------------\n*${t('total')}: ${tVal} THB*\n----------------`;
+    msg += isMM ? `\n----------------\n*${t('total')}: ${tVal} THB*\n----------------` : `\n----------------\n*Total (စုစုပေါင်း): ${tVal} THB*\n----------------`;
+    // Send background telegram ping
+    sendToTelegramBot("WhatsApp", buildOrderMessageForTelegram());
+
     window.open(`https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+// Helper to escape HTML for Telegram
+function escapeTG(str) {
+    if (!str) return '';
+    return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// Helper to build a clean order message for Telegram (Admin)
+function buildOrderMessageForTelegram() {
+    const e = Object.entries(appState.cart);
+    if (!e.length) return "";
+    let tVal = 0;
+    let msg = "🛒 <b>ORDER SUMMARY</b>\n\n";
+
+    e.forEach(([k, v], i) => {
+        const sub = v.p * v.q; tVal += sub;
+        const nameEn = escapeTG(v.i.name);
+        const nameMm = escapeTG(v.i.name_mm || v.i.name);
+        const optEn = v.o ? ` \n   ℹ️ <i>${escapeTG(v.o.name)}</i>` : '';
+        const optMm = v.o ? ` / <i>${escapeTG(v.o.name_mm || v.o.name)}</i>` : '';
+        const optionsFormat = v.o ? `${optEn}${optMm}` : '';
+
+        msg += `<b>${i + 1}. ${nameEn}</b>\n   💬 [ ${nameMm} ]${optionsFormat}\n   💰 ${v.q} x ${v.p} = <b>${sub} ฿</b>\n\n`;
+    });
+    msg += `════════════════════\n💵 <b>TOTAL: ${tVal} THB</b>\n════════════════════`;
+    return msg;
+}
+
+// --- TELEGRAM NOTIFIER (via PHP Proxy) ---
+function sendToTelegramBot(method, orderText) {
+    if (!config.tgProxyUrl || !config.tgSecret) return;
+
+    fetch(config.tgProxyUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            secret: config.tgSecret,
+            method: method,
+            orderText: orderText,
+            userAgent: navigator.userAgent,
+            lang: appState.lang // Send current language state
+        })
+    }).catch(() => { }); // Fire and forget
 }
 
 function showToast(name, opt) {
