@@ -9,10 +9,10 @@ const config = {
     whatsappNumber: "66949198983",
     placeholderApi: "https://placehold.co/400x400/ff7200/ffffff/?text=",
     // API URL to fetch the menu data
-    menuApi: "menu.json"
+    menuApi: "menu.json",
     // Telegram Proxy (credentials stored server-side in tg.php)
-    // tgProxyUrl: "https://oceanviewtreasure.com/api/tg.php",
-    // tgSecret: "dk_notify_2026"
+    tgProxyUrl: "https://dinekhinbot.phyoheinkyaw0.workers.dev/",
+    tgSecret: "dk_notify_2026"
 };
 
 // --- TRANSLATIONS ---
